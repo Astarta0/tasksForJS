@@ -3,8 +3,7 @@
 // Города в списке могут идти в произвольном порядке. Напиши программу,
 // которая отберет и выведет N самых населенных городов по убыванию числа жителей.
 
-
-let CitiList = [
+let CityList = [
     {
         'country': 'Япония',
         'city': 'Токио — Иокогама',
@@ -34,22 +33,33 @@ let CitiList = [
 ];
 
 function SortCity(citiesArray){
-    let sortedPopulations = [];
-    let result = [];
-    citiesArray.forEach((city) => {
-        if (city['population']) {
-            sortedPopulations.push(city['population']);
-        }
-    });
+        return citiesArray.slice().sort(sortPop);
 
-    sortedPopulations.sort().forEach((populat) => {
-        citiesArray.forEach((city) => {
-            if (populat === city['population']) {
-                result.push(city);
-            }
-        });
-    });
-    return result;
+        function sortPop(prevCity, nextCity){
+            if (prevCity['population'] > nextCity['population']) return 1;
+            if (prevCity['population'] < nextCity['population']) return -1;
+            if (prevCity['population'] === nextCity['population']) return 0;
+        }
 }
 
-console.log(SortCity(CitiList));
+// function SortCity(citiesArray){
+//     let sortedPopulations = [];
+//     let result = [];
+//     citiesArray.forEach((city) => {
+//         if (city['population']) {
+//             sortedPopulations.push(city['population']);
+//         }
+//     });
+//
+//     sortedPopulations.sort().forEach((populat) => {
+//         citiesArray.forEach((city) => {
+//             if (populat === city['population']) {
+//                 result.push(city);
+//             }
+//         });
+//     });
+//     return result;
+// }
+
+console.log(SortCity(CityList));
+console.log(CityList);
