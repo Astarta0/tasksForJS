@@ -8,7 +8,7 @@
 function map(fn ,array){
     let resultsArray = [];
     array.forEach((currentvalue, index) => {
-        resultsArray[index] = square(currentvalue);
+        resultsArray[index] = fn(currentvalue);
     });
     return resultsArray;
 }
