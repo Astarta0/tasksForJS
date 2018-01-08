@@ -7,16 +7,37 @@
  * @throws {HamburgerException}  При неправильном использовании
  */
 function Hamburger(size, stuffing) {
-    try {
         debugger;
+        if (!size || !stuffing) {
+            throw new HamburgerException(`no size given`);
+        }
+        if (![Hamburger.SIZE_SMALL, Hamburger.SIZE_LARGE].includes(size)){
+            throw new HamburgerException(`invalid size ${size}`);
+        }
+        if (![Hamburger.STUFFING_CHEESE, Hamburger.STUFFING_SALAD, Hamburger.STUFFING_POTATO].includes(stuffing)){
+            throw new HamburgerException(`invalid stuffing ${stuffing}`);
+        }
         // обязательные свойства конкретного гамбургера
         this._size = size;
         this._stuffing = stuffing;
         this._toppings = [];
+}
 
+/**
+ * Представляет информацию об ошибке в ходе работы с гамбургером.
+ * Подробности хранятся в свойстве message.
+ * @constructor
+ */
+function HamburgerException (message) {
+    let argArr = Array.from(arguments);
+    Error.apply(this, argArr);
+    this.message = message;
+    this.name = "HamburgerException";
 
-    } catch (err){
-
+    if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, this.constructor);
+    } else {
+        this.stack = (new Error()).stack;
     }
 }
 
@@ -80,8 +101,13 @@ Hamburger.CostCaloriesCollection = [
  * @param topping     Тип добавки
  * @throws {HamburgerException}  При неправильном использовании
  */
-Hamburger.prototype.addTopping = function (topping){
+Hamburger.prototype.addTopping = function (){
     let toppingsArr = Array.from(arguments);
+    toppingsArr.forEach((topping) => {
+        if (this._toppings.includes(topping)){
+            throw new HamburgerException(`duplicate topping ${topping}`);
+        }
+    });
     this._toppings = Array.from(new Set(toppingsArr));
 }
 
@@ -93,7 +119,11 @@ Hamburger.prototype.addTopping = function (topping){
  * @throws {HamburgerException}  При неправильном использовании
  */
 Hamburger.prototype.removeTopping = function (topping){
-    if (this._toppings.indexOf(topping) >= 0){
+    let isToppingExist = this._toppings.includes(topping);
+    if (!isToppingExist){
+        throw new HamburgerException('topping ${topping} doesnot exist');
+    }
+    if (isToppingExist){
             this._toppings.splice(this._toppings.indexOf(topping), 1);
     }
 }
@@ -187,13 +217,6 @@ Hamburger.prototype.calculateCalories = function (){
     return calories;
 }
 
-/**
- * Представляет информацию об ошибке в ходе работы с гамбургером.
- * Подробности хранятся в свойстве message.
- * @constructor
- */
-function HamburgerException () {}
-
 let gamburger = new Hamburger(Hamburger.SIZE_LARGE, Hamburger.STUFFING_CHEESE);
 gamburger.addTopping(Hamburger.TOPPING_MAYO, Hamburger.TOPPING_SPICE, Hamburger.TOPPING_MAYO, Hamburger.TOPPING_SPICE, Hamburger.TOPPING_MAYO, Hamburger.TOPPING_SPICE);
 gamburger.removeTopping(Hamburger.TOPPING_MAYO);
@@ -201,6 +224,9 @@ console.log("Have toppings:", gamburger.getToppings());
 console.log("Price: %f", gamburger.calculatePrice());
 console.log("Calories: %f", gamburger.calculateCalories());
 
-
-let gamburger1 = new Hamburger(Hamburger.TOPPING_SPICE,Hamburger.TOPPING_SPICE );
-let gamburger2 = new Hamburger() ;
+let gamburger1 = new Hamburger(Hamburger.TOPPING_SPICE, Hamburger.TOPPING_SPICE );
+let gamburger2 = new Hamburger();
+// добавляем много добавок
+let gamburger3 = new Hamburger(Hamburger.SIZE_SMALL, Hamburger.STUFFING_CHEESE);
+gamburger3.addTopping(Hamburger.TOPPING_MAYO);
+gamburger3.addTopping(Hamburger.TOPPING_MAYO);
